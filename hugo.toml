@@ -1,0 +1,13 @@
+baseURL = "https://lighton07.github.io/"
+languageCode = "ko"
+title = "내 블로그"
+theme = "PaperMod"
+
+[params]
+  math = true
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+
+[markup.goldmark.renderer]
+  unsafe = true
