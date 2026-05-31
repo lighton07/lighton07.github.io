@@ -1,6 +1,6 @@
 baseURL = "https://lighton07.github.io/"
 languageCode = "ko"
-title = "내 블로그"
+title = "Lighton"
 theme = "PaperMod"
 
 [params]
@@ -8,6 +8,20 @@ theme = "PaperMod"
   ShowReadingTime = true
   ShowShareButtons = false
   ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+
+  [params.homeInfoParams]
+    Title = "Lighton"
+    Content = "수학과 컴퓨터과학을 좋아하는 대학생입니다. 알고리즘, 수학적 모델링, 개인 프로젝트에 관한 글을 씁니다."
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/lighton07"
 
 [markup.goldmark.renderer]
   unsafe = true
+
+[markup.highlight]
+  style = "dracula"
+  lineNos = false
