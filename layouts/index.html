@@ -7,48 +7,17 @@
 {{- $postsSection := site.GetPage "/posts" }}
 <div class="folder-home">
 
-  {{/* ── Left: category tree ── */}}
+  {{/* ── Left: recursive folder tree ── */}}
   <nav class="folder-nav">
     <div class="folder-nav-heading">카테고리</div>
-
     {{- if $postsSection }}
-      {{- range $postsSection.Sections }}
-      <a class="folder-nav-item" href="{{ .Permalink }}">
-        <span class="folder-nav-name">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-               viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-               style="vertical-align:-2px;margin-right:5px;opacity:.7">
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-          </svg>{{ .Title }}
-        </span>
-        <span class="folder-nav-count">{{ len .RegularPages }}</span>
-      </a>
-      {{- end }}
-
-      {{- $rootPosts := where $postsSection.Pages "Kind" "page" }}
-      {{- if $rootPosts }}
-      <a class="folder-nav-item" href="{{ $postsSection.Permalink }}">
-        <span class="folder-nav-name">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-               viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-               style="vertical-align:-2px;margin-right:5px;opacity:.7">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-          </svg>미분류
-        </span>
-        <span class="folder-nav-count">{{ len $rootPosts }}</span>
-      </a>
-      {{- end }}
+      {{- partial "folder_tree_recursive.html" $postsSection }}
     {{- end }}
-
   </nav>
 
   {{/* ── Right: recent posts ── */}}
   <div class="folder-recent">
     <div class="folder-nav-heading">최근 글</div>
-
     {{- $allPosts := where site.RegularPages "Type" "posts" }}
     {{- range first 8 (sort $allPosts "Date" "desc") }}
     <article class="post-entry">
@@ -62,23 +31,20 @@
       {{- end }}
       <footer class="entry-footer">
         {{- partial "post_meta.html" . -}}
-        {{- with .Parent }}
-          {{- if ne .Kind "home" }}
-          <span class="entry-folder">
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2" style="vertical-align:-1px;margin-right:3px">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            </svg>{{ .Title }}
-          </span>
-          {{- end }}
-        {{- end }}
+        {{- with .Parent }}{{- if ne .Kind "home" }}
+        <span class="entry-folder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               style="vertical-align:-1px;margin-right:3px">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>{{ .Title }}
+        </span>
+        {{- end }}{{- end }}
       </footer>
       <a class="entry-link" aria-label="post link to {{ .Title | plainify }}"
          href="{{ .Permalink }}"></a>
     </article>
     {{- end }}
-
   </div>
 
 </div>

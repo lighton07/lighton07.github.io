@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Blog Editor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="window._katexReady=true; if(window._onKatexReady) window._onKatexReady()"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-title">✦ Blog Editor</span>
+  <span class="topbar-url">lighton07.github.io</span>
+  <span id="status">준비됨</span>
+  <button class="btn btn-ghost"    id="btn-save">💾 저장</button>
+  <button class="btn btn-primary"  id="btn-push">🚀 Push</button>
+  <button class="btn btn-green"    id="btn-sync">🔄 Sync All</button>
+</div>
+
+<div class="workspace">
+
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <button class="btn btn-ghost" id="btn-new">✚ 새 글</button>
+      <button class="btn btn-ghost" id="btn-new-folder" title="새 폴더 (중첩: math/calculus)">📁+</button>
+    </div>
+    <div class="folder-tree" id="folder-tree"></div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-footer">
+      <div class="sidebar-nav-btn" id="btn-homepage">🏠 Main Page</div>
+    </div>
+  </div>
+
+  <!-- ── Post editor ── -->
+  <div class="pane" id="pane-post">
+    <div class="pane-header">
+      ✏️ 에디터
+      <span class="pane-badge" id="editing-label"></span>
+    </div>
+    <div class="editor-meta">
+      <div class="field">
+        <label>제목</label>
+        <input type="text" id="post-title" placeholder="글 제목...">
+      </div>
+      <div class="meta-row">
+        <div class="field">
+          <label>날짜</label>
+          <input type="date" id="post-date">
+        </div>
+        <div class="field">
+          <label>폴더</label>
+          <select id="post-folder"><option value="">(미분류)</option></select>
+        </div>
+        <div class="field grow">
+          <label>태그</label>
+          <input type="text" id="post-tags" placeholder="math, cs">
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="post-math" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">KaTeX</span>
+        </div>
+      </div>
+    </div>
+    <textarea class="main-editor" id="post-body"
+      placeholder="Markdown으로 작성하세요...&#10;&#10;인라인: $e^{i\pi}+1=0$&#10;블록: $$\int_0^\infty e^{-x^2}dx=\frac{\sqrt{\pi}}{2}$$"></textarea>
+  </div>
+
+  <!-- ── Homepage editor ── -->
+  <div class="pane" id="pane-homepage" style="display:none">
+    <div class="pane-header">🏠 메인 페이지 편집</div>
+    <div class="hp-editor">
+      <div class="hp-section">
+        <h3>프로필</h3>
+        <div class="field" style="margin-bottom:7px">
+          <label>이름</label>
+          <input type="text" id="hp-name">
+        </div>
+        <div class="field">
+          <label>소개글</label>
+          <textarea id="hp-bio" rows="3" style="resize:vertical"></textarea>
+        </div>
+      </div>
+      <div class="hp-section">
+        <h3>학력</h3>
+        <div id="edu-list"></div>
+        <button class="btn-add" id="btn-add-edu">+ 항목 추가</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Preview ── -->
+  <div class="pane preview-pane">
+    <div class="pm-nav">
+      <span class="pm-nav-title" id="preview-site-title">Lighton</span>
+      <div class="pm-nav-links">
+        <span class="pm-nav-link">Posts</span>
+        <span class="pm-nav-link">Tags</span>
+      </div>
+    </div>
+    <div class="pm-wrap" id="preview-content"></div>
+  </div>
+
+</div><!-- workspace -->
+
+<script src="sidebar.js"></script>
+<script src="preview.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
