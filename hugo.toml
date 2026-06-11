@@ -13,7 +13,7 @@ theme = "PaperMod"
 
   [params.homeInfoParams]
     Title = "Lighton"
-    Content = "수학과 컴퓨터과학을 좋아하는 대학생입니다. 알고리즘, 수학적 모델링, 개인 프로젝트에 관한 글을 씁니다."
+    Content = "수학과 컴퓨터과학을 포스팅합니다"
 
   [[params.socialIcons]]
     name = "github"
