@@ -1,3 +1,4 @@
+{{/* KaTeX for posts with math: true */}}
 {{ if .Params.math }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -8,4 +9,90 @@
       {left: '$', right: '$', display: false}
     ]
   });"></script>
+{{ end }}
+
+{{/* Homepage: folder layout styles */}}
+{{ if .IsHome }}
+<style>
+.folder-home {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 175px 1fr;
+  gap: 22px;
+  padding-top: 4px;
+}
+.folder-nav-heading {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--secondary);
+  margin-bottom: 10px;
+}
+.folder-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 11px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--primary);
+  font-size: .84rem;
+  transition: border-color .15s, background .15s;
+}
+.folder-nav-item:hover {
+  border-color: var(--primary);
+  background: var(--entry);
+}
+.folder-nav-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.folder-nav-count {
+  font-size: .7rem;
+  color: var(--secondary);
+  background: var(--code-bg);
+  padding: 1px 6px;
+  border-radius: 99px;
+  flex-shrink: 0;
+  margin-left: 5px;
+}
+.folder-recent .post-entry {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  margin-bottom: 9px;
+  background: var(--entry);
+  position: relative;
+  transition: border-color .15s;
+}
+.folder-recent .post-entry:hover { border-color: var(--primary); }
+.folder-recent .entry-header h2 { font-size: .97rem; margin-bottom: 4px; }
+.folder-recent .entry-content p {
+  font-size: .82rem;
+  color: var(--secondary);
+  margin: 0 0 5px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.folder-recent .entry-footer {
+  font-size: .73rem;
+  color: var(--secondary);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.entry-folder { opacity: .75; }
+.entry-link { position: absolute; inset: 0; border-radius: 10px; }
+@media (max-width: 580px) {
+  .folder-home { grid-template-columns: 1fr; }
+}
+</style>
 {{ end }}
