@@ -4,13 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Blog Editor</title>
+
+  <!-- KaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
     onload="window._katexReady=true; if(window._onKatexReady) window._onKatexReady()"></script>
+
+  <!-- CodeMirror 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/continuelist.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- Context menu (shared) -->
+<div id="ctx-menu" class="ctx-menu">
+  <div class="ctx-item" id="ctx-rename">✏️ 이름 변경</div>
+  <div class="ctx-divider"></div>
+  <div class="ctx-item ctx-danger" id="ctx-delete">🗑 삭제</div>
+</div>
 
 <div class="topbar">
   <span class="topbar-title">✦ Blog Editor</span>
@@ -69,8 +86,8 @@
         </div>
       </div>
     </div>
-    <textarea class="main-editor" id="post-body"
-      placeholder="Markdown으로 작성하세요...&#10;&#10;인라인: $e^{i\pi}+1=0$&#10;블록: $$\int_0^\infty e^{-x^2}dx=\frac{\sqrt{\pi}}{2}$$"></textarea>
+    <!-- CodeMirror mounts here -->
+    <div id="cm-host" class="cm-host"></div>
   </div>
 
   <!-- ── Homepage editor ── -->

@@ -6,11 +6,43 @@ let currentFile = null;
 let allPosts    = [];
 let allFolders  = [];
 let eduEntries  = [];
+let cmEditor    = null;   // CodeMirror instance
+
+// ── CodeMirror helpers ────────────────────────────────────────────────────────
+
+function getEditorValue() {
+  return cmEditor ? cmEditor.getValue() : '';
+}
+function setEditorValue(val) {
+  if (cmEditor) {
+    cmEditor.setValue(val || '');
+    cmEditor.clearHistory();
+  }
+}
+function focusEditor() {
+  if (cmEditor) cmEditor.focus();
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('post-date').value = new Date().toISOString().slice(0, 10);
+
+  // CodeMirror
+  cmEditor = CodeMirror(document.getElementById('cm-host'), {
+    mode: 'markdown',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping: true,
+    tabSize: 2,
+    indentWithTabs: false,
+    autofocus: false,
+    extraKeys: { Enter: 'newlineAndIndentContinueMarkdownList' },
+    placeholder: 'Markdown으로 작성하세요...\n\n인라인: $e^{i\\pi}+1=0$\n블록: $$\\int_0^\\infty e^{-x^2}dx=\\frac{\\sqrt{\\pi}}{2}$$',
+  });
+  cmEditor.on('change', () => { if (mode === 'post') renderPreview(); });
+
+  initContextMenu();
 
   document.getElementById('btn-save').onclick       = saveCurrentFile;
   document.getElementById('btn-push').onclick       = pushCurrent;
@@ -79,7 +111,7 @@ function newPost() {
   currentFile = null;
   showPostPane();
   document.getElementById('post-title').value = '';
-  document.getElementById('post-body').value  = '';
+  setEditorValue('');
   document.getElementById('post-tags').value  = '';
   document.getElementById('post-date').value  = new Date().toISOString().slice(0, 10);
   document.getElementById('post-math').checked = true;
@@ -97,7 +129,7 @@ async function openPost(file) {
   document.getElementById('post-title').value  = data.title || '';
   document.getElementById('post-date').value   = data.date  || '';
   document.getElementById('post-tags').value   = data.tags  || '';
-  document.getElementById('post-body').value   = data.body  || '';
+  setEditorValue(data.body || '');
   document.getElementById('post-math').checked = data.math === 'true' || data.math === true;
   document.getElementById('editing-label').textContent = file;
 
@@ -198,7 +230,7 @@ function buildPostPayload() {
   const folder = document.getElementById('post-folder').value;
   const tags   = document.getElementById('post-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
   const math   = document.getElementById('post-math').checked;
-  const body   = document.getElementById('post-body').value;
+  const body   = getEditorValue();
 
   let fm = `---\ntitle: "${title}"\ndate: ${date}\n`;
   if (tags.length) fm += `tags: [${tags.map(t=>`"${t}"`).join(', ')}]\n`;

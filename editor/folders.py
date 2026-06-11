@@ -87,6 +87,27 @@ def move_post(from_path, to_parent):
     return norm(to_file.relative_to(POSTS_DIR))
 
 
+
+def rename(folder_path, new_name):
+    import re as _re
+    old_dir = POSTS_DIR / folder_path
+    if not old_dir.exists():
+        raise FileNotFoundError(f"folder not found: {folder_path}")
+    if not new_name or '/' in new_name or '..' in new_name:
+        raise ValueError("invalid name")
+    new_dir = old_dir.parent / new_name
+    if new_dir.exists():
+        raise FileExistsError(f"'{new_name}' already exists")
+    old_dir.rename(new_dir)
+    index = new_dir / '_index.md'
+    if index.exists():
+        txt = index.read_text(encoding='utf-8')
+        txt = _re.sub(r'(title:\s*")[^"]*"', f'\\1{new_name}"', txt)
+        index.write_text(txt, encoding='utf-8')
+    return norm(new_dir.relative_to(POSTS_DIR))
+
+
+
 def move_folder(from_path, to_parent):
     from_dir = POSTS_DIR / from_path
     if not from_dir.exists():
@@ -101,3 +122,14 @@ def move_folder(from_path, to_parent):
         raise ValueError("cannot move folder into itself")
     shutil.move(str(from_dir), str(to_dir))
     return norm(to_dir.relative_to(POSTS_DIR))
+
+
+def delete(folder_path, force=False):
+    folder = POSTS_DIR / folder_path
+    if not folder.exists():
+        raise FileNotFoundError(f"folder not found: {folder_path}")
+    posts_inside = [f for f in folder.rglob("*.md") if f.name != "_index.md"]
+    if posts_inside and not force:
+        raise ValueError(f"폴더에 {len(posts_inside)}개의 글이 있습니다. 강제 삭제하려면 force=true")
+    shutil.rmtree(str(folder))
+    return True

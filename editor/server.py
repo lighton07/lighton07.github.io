@@ -48,6 +48,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             '/api/sync':          self._sync,
             '/api/save-homepage': self._save_homepage,
             '/api/create-folder': self._create_folder,
+            '/api/rename-folder': self._rename_folder,
+            '/api/delete-folder': self._delete_folder,
             '/api/move':          self._move,
         }
         fn = handlers.get(path)
@@ -102,6 +104,20 @@ class Handler(http.server.BaseHTTPRequestHandler):
         try:
             path = folders.create(b.get('path', b.get('name', '')))
             return {"ok": True, "path": path}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def _rename_folder(self, b):
+        try:
+            new = folders.rename(b.get('path', ''), b.get('newName', ''))
+            return {"ok": True, "newPath": new}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def _delete_folder(self, b):
+        try:
+            folders.delete(b.get('path', ''), force=b.get('force', False))
+            return {"ok": True}
         except Exception as e:
             return {"ok": False, "error": str(e)}
 

@@ -31,7 +31,7 @@ function renderPostPreview() {
   const title  = document.getElementById('post-title').value;
   const date   = document.getElementById('post-date').value;
   const tags   = document.getElementById('post-tags').value;
-  const body   = document.getElementById('post-body').value;
+  const body   = (typeof getEditorValue === 'function') ? getEditorValue() : '';
   const math   = document.getElementById('post-math').checked;
   const folder = document.getElementById('post-folder').value;
 

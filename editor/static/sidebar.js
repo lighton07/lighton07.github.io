@@ -63,6 +63,12 @@ function buildFolder(folder) {
   setupDraggable(label, { type: 'folder', path: folder.path, title: folder.name });
   setupDropZone(label, folder.path);
 
+  label.addEventListener('contextmenu', e => showCtx(e, {
+    path: folder.path,
+    name: folder.name,
+    postCount: countAll(folder),
+  }));
+
   group.appendChild(label);
 
   const childrenWrap = document.createElement('div');
@@ -181,6 +187,73 @@ async function doMove(item, newParent) {
     }
   } catch (err) {
     setStatus('✗ ' + err.message, 'err');
+  }
+}
+
+// ── Context Menu ─────────────────────────────────────────────────────────────
+
+let ctxTarget = null;  // { path, name, postCount }
+
+function initContextMenu() {
+  const menu = document.getElementById('ctx-menu');
+  document.getElementById('ctx-rename').onclick = ctxRename;
+  document.getElementById('ctx-delete').onclick = ctxDelete;
+  document.addEventListener('click', () => hideCtx());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideCtx(); });
+}
+
+function showCtx(e, item) {
+  e.preventDefault();
+  e.stopPropagation();
+  ctxTarget = item;
+  const menu = document.getElementById('ctx-menu');
+  const x = Math.min(e.clientX, window.innerWidth  - 170);
+  const y = Math.min(e.clientY, window.innerHeight - 90);
+  menu.style.left = x + 'px';
+  menu.style.top  = y + 'px';
+  menu.classList.add('visible');
+}
+
+function hideCtx() {
+  document.getElementById('ctx-menu').classList.remove('visible');
+  ctxTarget = null;
+}
+
+async function ctxRename() {
+  const t = ctxTarget;
+  hideCtx();
+  if (!t) return;
+  const newName = prompt(`"${t.name}" → 새 이름:`, t.name);
+  if (!newName || newName.trim() === t.name) return;
+  setStatus('이름 변경 중...');
+  const res = await apiFetch('/api/rename-folder', { path: t.path, newName: newName.trim() });
+  if (res.ok) {
+    // Re-expand with new path
+    expandedFolders.delete(t.path);
+    expandedFolders.add(res.newPath);
+    setStatus('✓ 이름 변경됨', 'ok');
+    await loadTree();
+  } else {
+    setStatus('✗ ' + res.error, 'err');
+  }
+}
+
+async function ctxDelete() {
+  const t = ctxTarget;
+  hideCtx();
+  if (!t) return;
+  const warn = t.postCount > 0
+    ? `"${t.name}" 에 글 ${t.postCount}개가 있습니다.\n삭제하면 글도 함께 사라집니다. 계속하시겠습니까?`
+    : `"${t.name}" 폴더를 삭제하시겠습니까?`;
+  if (!confirm(warn)) return;
+  setStatus('삭제 중...');
+  const res = await apiFetch('/api/delete-folder', { path: t.path, force: t.postCount > 0 });
+  if (res.ok) {
+    expandedFolders.delete(t.path);
+    setStatus('✓ 삭제됨', 'ok');
+    await loadTree();
+  } else {
+    setStatus('✗ ' + res.error, 'err');
   }
 }
 
